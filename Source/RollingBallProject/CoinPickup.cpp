@@ -3,13 +3,14 @@
 #include "CoinPickup.h"
 #include "Components/StaticMeshComponent.h"
 #include "BallPawnCPlus.h"
+#include "Pickup.h"
 
 ACoinPickup::ACoinPickup()
 {
 	
 	
-	CurrentObjectCount = CurrentCoinCount;
-	CurrentCoinCount = 5;
+	
+	CurrentObjectCount = CurrentCoinCount =5;
 	
 }
 
@@ -29,6 +30,7 @@ void ACoinPickup::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 
 void ACoinPickup::OnOverlapEnd(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
+	Super::OnOverlapEnd(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 }
 
 void ACoinPickup::BeginPlay()

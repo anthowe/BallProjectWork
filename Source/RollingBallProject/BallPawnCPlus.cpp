@@ -6,7 +6,12 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/PrimitiveComponent.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicsReplication.h"
+#include "PhysicsPublic.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/Controller.h"
 
 
 // Sets default values
@@ -35,28 +40,45 @@ ABallPawnCPlus::ABallPawnCPlus()
 	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
 	CurrentObjectCount = 0;
+	
 }
 
 void ABallPawnCPlus::MoveForward(float Val)
 {
-	AddMovementInput(GetActorForwardVector(), Val);
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
+	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	AddMovementInput(Direction, Val);
+	
 }
 
 void ABallPawnCPlus::MoveRight(float Val)
 {
-	AddMovementInput(GetActorRightVector(), Val);
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
+
+	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(Direction, Val);
 }
 
 void ABallPawnCPlus::Turn(float Val)
 {
 	AddControllerYawInput(Val);
+	
 }
 
 void ABallPawnCPlus::Lookup(float Val)
 {
 	AddControllerPitchInput(Val);
 }
+
+void ABallPawnCPlus::AddTorqueInRadians(float Val)
+{
+	AddTorqueInRadians(Val);
+}
+
+
 
 // Called when the game starts or when spawned
 void ABallPawnCPlus::BeginPlay()
@@ -77,7 +99,7 @@ void ABallPawnCPlus::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &ABallPawnCPlus::MoveForward);
+	PlayerInputComponent->BindAxis("MoveForward", this, &ABallPawnCPlus::AddTorqueInRadians);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABallPawnCPlus::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &ABallPawnCPlus::Turn);
 	PlayerInputComponent->BindAxis("Lookup", this, &ABallPawnCPlus::Lookup);
@@ -88,4 +110,5 @@ void ABallPawnCPlus::IncrementObject(int32 Number)
 {
 	CurrentObjectCount += Number;
 	UE_LOG(LogTemp, Warning, TEXT("Score: %i"), CurrentObjectCount);
+	
 }

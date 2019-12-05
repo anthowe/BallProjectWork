@@ -37,10 +37,15 @@ public:
 
 	void Lookup(float Val);
 
+	virtual void AddTorqueInRadians(float Val);
+
+	
+
 	void IncrementObject(int32 Number);
 
 	UPROPERTY(VisibleAnywhere, Category = "Score")
 	int32 CurrentObjectCount;
+
 
 protected:
 	// Called when the game starts or when spawned
